@@ -1,0 +1,40 @@
+{% extends "index.html" %} {% block content %}
+    <br>
+    <div class="text-center">
+        <h1 class="text-center"><strong>Garage Sales</strong></h1>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li><strong>{{ message }} </strong></li>
+                {% endfor %}
+            </ul>
+        {% endif %} {% endwith %}
+        <br>
+        <form method="get" action="{{ url_for('add_garage_sale') }}">
+            <button type="submit" class="btn btn-primary btn-lg">Add New Garage Sale</button>
+        </form>
+
+        <br>
+        <div class="container-fluid padding">
+            <div class="row padding ">
+                {% for i in garage_sales %}
+                    <div class="col-sm-6">
+
+                        <div class="card">
+                            <h4 class="text-center"><a
+                                    href="{{ url_for('show_garage_sale_details', garage_sale_id = i.id) }}"><strong>{{ i.name }}</strong></a>
+                            </h4><br>
+                            <div class="text-center">{{ i.address }}</div>
+                            <br>
+                            <p class="text-center"><a href="{{ url_for('edit_garage_sale', garage_sale_id = i.id) }}">
+                                Edit</a> | <a
+                                    href="{{ url_for('delete_garage_sale', garage_sale_id = i.id) }}">Delete</a></p>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

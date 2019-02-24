@@ -1,0 +1,56 @@
+{% extends "index.html" %} {% block content %}
+    <!-- GOOGLE PLUS SIGN IN BUTTON-->
+
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+
+    <div class="form-signin" style="width:800px; margin:0 auto;">
+        <h1 class="h3 mb-3 font-weight-normal">Login/SignUp</h1>
+        <div id="signinButton" style="margin: 30px;">
+
+        <span class="g-signin"
+              data-scope="openid email profile"
+              data-clientid="821609926844-k5476bupthtsr8201bevbqf3dt0ic73u.apps.googleusercontent.com"
+              data-redirecturi="postmessage"
+              data-accesstype="offline"
+              data-cookiepolicy="single_host_origin"
+              data-callback="signInCallback"
+              data-approvalprompt="force">
+          </span>
+        </div>
+        <div id="result"></div>
+
+        <script>
+            function signInCallback(authResult) {
+                if (authResult['code']) {
+                    // Hide the sign-in button now that the user is authorized
+                    // $('#signinButton').attr('style', 'display: none');
+                    // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
+                    $.ajax({
+                        type: 'POST',
+                        url: '/gconnect?state={{STATE}}',
+                        processData: false,
+                        data: authResult['code'],
+                        contentType: 'application/octet-stream; charset=utf-8',
+                        success: function (result) {
+                            // Handle or verify the server response if necessary.
+                            if (result) {
+                                $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                                setTimeout(function () {
+                                    window.location.href = "/garagesales/";
+                                }, 4000);
+
+                            } else if (authResult['error']) {
+                                console.log('There was an error: ' + authResult['error']);
+                            } else {
+                                $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                            }
+                        }
+
+                    });
+                }
+            }
+        </script>
+
+    </div>
+{% endblock %}
