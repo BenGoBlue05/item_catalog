@@ -1,9 +1,9 @@
-#Garage Sale
+# Garage Sale
 A web app for posting garage sales and items sold in the sales.\
 \
 Udacity FSND Item Catalog project
 
-###Getting Started
+### Getting Started
 
  1. Install Vagrant and VirtualBox
  2. cd to project root
