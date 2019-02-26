@@ -82,7 +82,7 @@ def delete_garage_sale(garage_sale_id):
         return redirect(url_for('show_login'))
     if login_session['user_id'] != sale.user_id:
         flash("You were not authorized to access that page.")
-        return redirect(url_for('show_login'))
+        return redirect(url_for('show_garage_sales'))
     if request.method == 'POST':
         session.delete(sale)
         session.commit()
@@ -122,7 +122,8 @@ def new_item(garage_sale_id):
             name=name,
             description=request.form['description'],
             price=request.form['price'],
-            garage_sale_id=garage_sale_id
+            garage_sale_id=garage_sale_id,
+            user_id=login_session['user_id']
         )
         session.add(item)
         session.commit()
@@ -139,6 +140,9 @@ def edit_item(garage_sale_id, item_id):
         return redirect(url_for('show_login'))
 
     item = session.query(Item).filter_by(id=item_id).one()
+    if login_session['user_id'] != item.user_id:
+        flash("You are not authorized to access that page.")
+        return redirect(url_for('show_garage_sale_details', garage_sale_id=garage_sale_id))
 
     if request.method == 'POST':
         name = request.form['name']
@@ -164,7 +168,9 @@ def delete_item(garage_sale_id, item_id):
         flash("Please log in to continue.")
         return redirect(url_for('show_login'))
     item = session.query(Item).filter_by(id=item_id).one()
-
+    if login_session['user_id'] != item.user_id:
+        flash("You are not authorized to access that page.")
+        return redirect(url_for('show_garage_sale_details', garage_sale_id=garage_sale_id))
     if request.method == 'POST':
         session.delete(item)
         session.commit()
