@@ -7,6 +7,7 @@ import random
 import string
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, GarageSale, Item
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -388,7 +389,7 @@ def get_user_id(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except NoResultFound:
         return None
 
 

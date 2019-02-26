@@ -45,7 +45,8 @@ class Item(Base):
     price = Column(String(12))
     description = Column(String(300))
 
-    garage_sale_id = Column(Integer, ForeignKey('garagesale.id', ondelete='CASCADE'))
+    garage_sale_id = Column(Integer,
+                            ForeignKey('garagesale.id', ondelete='CASCADE'))
     garagesale = relationship(GarageSale)
 
     user_id = Column(Integer, ForeignKey('user.id'))
