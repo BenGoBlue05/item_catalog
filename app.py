@@ -28,12 +28,14 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# json response for all garage sales
 @app.route('/garagesales/json/')
 def garage_sales_json():
     sales = session.query(GarageSale).all()
     return jsonify([i.serialize for i in sales])
 
 
+# home page
 @app.route('/')
 @app.route('/garagesales/')
 def show_garage_sales():
@@ -41,8 +43,10 @@ def show_garage_sales():
     return render_template('garage_sales.html', garage_sales=garage_sales)
 
 
+# add new garage sale
 @app.route('/garagesales/new/', methods=['GET', 'POST'])
 def add_garage_sale():
+    # go to login screen if not logged in
     if 'username' not in login_session:
         return redirect(url_for('show_login'))
     if request.method == 'POST':
@@ -59,11 +63,14 @@ def add_garage_sale():
         return render_template('add_garage_sale.html')
 
 
+# edit garage sale
 @app.route('/garagesales/<garage_sale_id>/edit/', methods=['GET', 'POST'])
 def edit_garage_sale(garage_sale_id):
+    # go to login screen if not logged in
     if 'username' not in login_session:
         return redirect(url_for('show_login'))
     sale = session.query(GarageSale).filter_by(id=garage_sale_id).one()
+    # prevent user from editing garage sale they did not create
     if login_session['user_id'] != sale.user_id:
         flash("You were not authorized to access that page.")
         return redirect(url_for('show_garage_sales'))
@@ -82,6 +89,7 @@ def edit_garage_sale(garage_sale_id):
         return render_template('edit_garage_sale.html', garage_sale=sale)
 
 
+# delete garage sale
 @app.route(
     '/garagesales/<int:garage_sale_id>/delete/',
     methods=['GET', 'POST']
@@ -102,18 +110,21 @@ def delete_garage_sale(garage_sale_id):
         return render_template('delete_garage_sale.html', garage_sale=sale)
 
 
+# json response for all items for a particular garage sale
 @app.route('/garagesales/<int:garage_sale_id>/items')
 def garage_sale_items_json(garage_sale_id):
     items = session.query(Item).filter_by(garage_sale_id=garage_sale_id).all()
     return jsonify([i.serialize for i in items])
 
 
+# json response for item details
 @app.route('/item/<int:item_id>')
 def item_details_json(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(item.serialize)
 
 
+# show all items for sale for a particular garage sale
 @app.route('/garagesales/<int:garage_sale_id>/', )
 @app.route('/garagesales/<int:garage_sale_id>/items/')
 def show_garage_sale_details(garage_sale_id):
@@ -123,11 +134,13 @@ def show_garage_sale_details(garage_sale_id):
                            garage_sale=sale, products=items)
 
 
+# add item
 @app.route(
     '/garagesales/<int:garage_sale_id>/items/new',
     methods=['GET', 'POST']
 )
 def new_item(garage_sale_id):
+    # go to login screen if not logged in
     if 'username' not in login_session:
         return redirect(url_for('show_login'))
     if request.method == 'POST':
@@ -148,16 +161,19 @@ def new_item(garage_sale_id):
         return render_template('new_item.html', garage_sale_id=garage_sale_id)
 
 
+# edit item
 @app.route(
     '/garagesales/<int:garage_sale_id>/items/<int:item_id>/edit/',
     methods=['GET', 'POST']
 )
 def edit_item(garage_sale_id, item_id):
+    # go to login screen if not logged in
     if 'username' not in login_session:
         flash("Please log in to continue.")
         return redirect(url_for('show_login'))
 
     item = session.query(Item).filter_by(id=item_id).one()
+    # prevent user from editing item that they did not create
     if login_session['user_id'] != item.user_id:
         flash("You are not authorized to access that page.")
         return redirect(url_for('show_garage_sale_details',
@@ -183,15 +199,18 @@ def edit_item(garage_sale_id, item_id):
                                garage_sale_id=garage_sale_id, item=item)
 
 
+# delete item
 @app.route(
     '/garagesales/<int:garage_sale_id>/items/<int:item_id>/delete/',
     methods=['GET', 'POST']
 )
 def delete_item(garage_sale_id, item_id):
+    # go to login screen if not logged in
     if 'username' not in login_session:
         flash("Please log in to continue.")
         return redirect(url_for('show_login'))
     item = session.query(Item).filter_by(id=item_id).one()
+    # prevent user from deleting item that they did not create
     if login_session['user_id'] != item.user_id:
         flash("You are not authorized to access that page.")
         return redirect(url_for('show_garage_sale_details',
@@ -207,6 +226,7 @@ def delete_item(garage_sale_id, item_id):
                                garage_sale_id=garage_sale_id, item=item)
 
 
+# show item details
 @app.route('/garagesales/<garage_sale_id>/items/<item_id>')
 @app.route('/garagesales/<garage_sale_id>/items/<item_id>')
 def show_item_details(garage_sale_id, item_id):
@@ -215,6 +235,7 @@ def show_item_details(garage_sale_id, item_id):
     return render_template('item_details.html', item=item, garage_sale=sale)
 
 
+# login
 @app.route('/login/')
 def show_login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -308,6 +329,7 @@ def gconnect():
     return output
 
 
+# Disconnect from Google oAuth.
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -331,9 +353,11 @@ def gdisconnect():
         return response
 
 
+# logout user
 @app.route('/logout/')
 def logout():
     if 'username' in login_session:
+        # reset variables
         gdisconnect()
         del login_session['gplus_id']
         del login_session['access_token']
