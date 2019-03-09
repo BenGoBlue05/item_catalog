@@ -21,7 +21,7 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read()
 )['web']['client_id']
 
-BASE_URL = "https://benlewis.dev"
+BASE_URL = "https://www.benlewis.dev"
 
 DB_NAME = 'sqlite:///garagesale.db'
 engine = create_engine(DB_NAME, connect_args={'check_same_thread': False})
