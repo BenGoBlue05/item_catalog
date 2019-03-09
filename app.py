@@ -396,4 +396,4 @@ def get_user_id(email):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=2200)
+    app.run(host='benlewis.dev', port=2200)
