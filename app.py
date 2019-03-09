@@ -255,7 +255,7 @@ def gconnect():
     code = request.data
     try:
         # auth code to credentials object
-        oauth_flow = flow_from_clientsecrets('credentials.json', scope='')
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -395,5 +395,5 @@ def get_user_id(email):
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
-    app.debug = False
-    app.run(host="https://www.benlewis.dev", port=2200)
+    app.debug = True
+    app.run(host='0.0.0.0', port=8000)
