@@ -21,8 +21,6 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read()
 )['web']['client_id']
 
-BASE_URL = "https://www.benlewis.dev"
-
 DB_NAME = 'sqlite:///garagesale.db'
 engine = create_engine(DB_NAME, connect_args={'check_same_thread': False})
 Base.metadata.bind = engine
@@ -398,4 +396,4 @@ def get_user_id(email):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = False
-    app.run(host=BASE_URL, port=2200)
+    app.run(host="https://www.benlewis.dev", port=2200)
