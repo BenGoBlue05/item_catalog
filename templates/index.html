@@ -13,6 +13,10 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+          content="821609926844-k5476bupthtsr8201bevbqf3dt0ic73u.apps.googleusercontent.com">
 </head>
 
 <body>
@@ -43,7 +47,7 @@
                                  class="rounded-circle" alt="Profile Picture" style="height: 30px; width: 30px;">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{{ url_for('logout') }}"><i
+                            <a class="dropdown-item" href="#" onclick="signOut();"><i
                                     class="fas fa-sign-out-alt text-and-icon"></i>Log out</a>
                         </div>
                     </li>
@@ -56,6 +60,27 @@
     </nav>
 </div>
 <br><br>
+<div class="g-signin2" data-onsuccess="signInCallback" hidden></div>
+<script>
+    function signOut() {
+
+        const auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+        $.ajax({
+            type: 'GET',
+            url: '/logout',
+            success: function () {
+                // Handle or verify the server response if necessary.
+                setTimeout(function () {
+                    window.location.href = "/garagesales/";
+                }, 4000);
+            }
+        });
+    }
+
+</script>
 {% block content %} {% endblock %}
 
 
