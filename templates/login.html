@@ -15,17 +15,6 @@
         <div id="result"></div>
         <script>
 
-            function onSignIn(googleUser) {
-                const id_token = googleUser.getAuthResponse().id_token;
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:5000/gconnect');
-                xhr.setRequestHeader('Content-Type', 'application/octet-stream; charset=utf-8');
-                xhr.onload = function () {
-                    console.log('Signed in as: ' + xhr.responseText);
-                };
-                xhr.send('idtoken=' + id_token);
-            }
-
             function signInCallback(googleUser) {
                 const id_token = googleUser.getAuthResponse().id_token;
                 // Hide the sign-in button now that the user is authorized
